@@ -13,7 +13,6 @@ import com.tolosa.items.api.models.dto.Item;
 import com.tolosa.items.api.models.service.IItemService;
 
 @RestController
-@RequestMapping("api/items")
 public class ItemController {
 	
 	public IItemService itemService;

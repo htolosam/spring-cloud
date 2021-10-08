@@ -12,7 +12,6 @@ import com.tolosa.products.api.models.entity.Product;
 import com.tolosa.products.api.models.service.IProductService;
 
 @RestController
-@RequestMapping("/products")
 public class ProductController {
 	
 	private IProductService productService;

@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.tolosa.items.api.models.dto.Product;
 
-@FeignClient(name = "products-manager", url = "localhost:8091")
+@FeignClient(name = "products-manager", url = "http://localhost:8091")
 public interface IProductClientRest {
 	
-	@GetMapping("/products")
+	@GetMapping
 	public List<Product> list();
 	
-	@GetMapping("/products/{id}")
+	@GetMapping("/{id}")
 	public Product detail(@PathVariable Integer id);
 
 }
