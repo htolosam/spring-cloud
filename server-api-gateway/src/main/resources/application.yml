@@ -8,10 +8,14 @@ spring:
           - Path=/api/products/**
         filters:
           - StripPrefix=2
+          - Ejemplo=hola este es el filtro example,usuario,htolosam
       - id: items-manager
         uri: lb://items-manager
         predicates:
           - Path=/api/items/**
         filters:
           - StripPrefix=2
+          - AddRequestHeader=token-request, 123456
+          - AddResponseHeader=tokes-request, 12345678
+          - AddRequestParameter=name, HoTolosa
           

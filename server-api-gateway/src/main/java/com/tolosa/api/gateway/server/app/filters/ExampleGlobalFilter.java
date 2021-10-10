@@ -6,11 +6,8 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.web.server.ServerWebExchange;
-
-import com.google.common.base.Objects;
 
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
@@ -35,14 +32,14 @@ public class ExampleGlobalFilter implements GlobalFilter, Ordered {
 			});
 			
 			exchange.getResponse().getCookies().add("color", ResponseCookie.from("color", "red").build());
-			exchange.getResponse().getHeaders().setContentType(MediaType.TEXT_PLAIN);
+			//exchange.getResponse().getHeaders().setContentType(MediaType.TEXT_PLAIN);
 		}));
 	}
 
 	@Override
 	public int getOrder() {
 		// TODO Auto-generated method stub
-		return -1;
+		return 1;
 	}
 
 }
