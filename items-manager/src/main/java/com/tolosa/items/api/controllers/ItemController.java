@@ -21,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 public class ItemController {
 
-	@Autowired
 	private IItemService itemService;
 	@Autowired
 	private CircuitBreakerFactory cbFactory;
@@ -40,10 +39,11 @@ public class ItemController {
 
 	@GetMapping("/{id}/{quantity}")
 	public Item detail(@PathVariable Integer id, @PathVariable Integer quantity) {
-		return cbFactory.create("items").run(() -> itemService.findById(id, quantity), e -> al);
+		return cbFactory.create("items").run(() -> itemService.findById(id, quantity), e -> this.alternateMethod(id, quantity, e));
 	}
 
-	public Item alternateMethod(Integer id, Integer quantity) {
+	public Item alternateMethod(Integer id, Integer quantity, Throwable e) {
+		log.info("Excepcion lanzzada en el micro product :: {} ::", e.getMessage());
 		return Item.builder().quantity(quantity)
 				.product(Product.builder().id(id).name("Producto predeterminado").price(0.00).build()).build();
 

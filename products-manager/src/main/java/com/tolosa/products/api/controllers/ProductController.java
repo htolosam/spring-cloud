@@ -1,6 +1,7 @@
 package com.tolosa.products.api.controllers;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +26,14 @@ public class ProductController {
 	}
 	
 	@GetMapping("/{id}")
-	public Product getById(@PathVariable Integer id) {
+	public Product getById(@PathVariable Integer id) throws InterruptedException{
+		if(id.equals(10)) {
+			throw new IllegalStateException("Producto no encontrado");
+		}
+		if(id.equals(7)) {
+			TimeUnit.SECONDS.sleep(5L);
+		}
+		
 		return productService.findById(id);
 	}
 
