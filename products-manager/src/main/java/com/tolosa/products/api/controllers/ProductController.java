@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tolosa.products.api.models.entity.Product;
+import com.tolosa.commons.app.models.entity.Product;
 import com.tolosa.products.api.models.service.IProductService;
 
 @RestController

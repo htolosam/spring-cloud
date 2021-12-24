@@ -2,7 +2,8 @@ package com.tolosa.products.api.models.service;
 
 import java.util.List;
 
-import com.tolosa.products.api.models.entity.Product;
+import com.tolosa.commons.app.models.entity.Product;
+
 
 /**
  * Interface para contrato de implementacion del servicio que manejara

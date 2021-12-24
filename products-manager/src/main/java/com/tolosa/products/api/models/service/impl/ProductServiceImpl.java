@@ -10,8 +10,8 @@ import java.util.TimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.tolosa.commons.app.models.entity.Product;
 import com.tolosa.products.api.models.dao.IProductDao;
-import com.tolosa.products.api.models.entity.Product;
 import com.tolosa.products.api.models.service.IProductService;
 
 import lombok.extern.slf4j.Slf4j;

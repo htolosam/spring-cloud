@@ -1,4 +1,4 @@
-package com.tolosa.products.api.models.entity;
+package com.tolosa.commons.app.models.entity;
 
 import java.util.Date;
 
