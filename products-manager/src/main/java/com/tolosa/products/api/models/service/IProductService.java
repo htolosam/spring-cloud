@@ -25,4 +25,25 @@ public interface IProductService {
 	 */
 	public Product findById(Integer id);
 	
+	/**
+	 * Metodo para guardar un producto
+	 * @param product
+	 * @return
+	 */
+	public Product save(Product product);
+	
+	/**
+	 * Actualizar registro
+	 * @param product
+	 * @param id
+	 * @return
+	 */
+	public Product update(Product product, Integer id);
+	
+	/**
+	 * Metodo para eliminar un producto
+	 * @param id
+	 */
+	public void deleteById(Integer id);
+	
 }

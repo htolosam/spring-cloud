@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.tolosa.items.api.clients.IProductClientRest;
 import com.tolosa.items.api.models.dto.Item;
+import com.tolosa.items.api.models.dto.Product;
 import com.tolosa.items.api.models.service.IItemService;
 
 @Service("serviceFeign")
@@ -27,6 +28,21 @@ public class ItemServiceFeign implements IItemService {
 	@Override
 	public Item findById(Integer id, Integer quantity) {
 		return Item.builder().product(productClientRest.detail(id)).quantity(quantity).build();
+	}
+
+	@Override
+	public Product save(Product product) {
+		return productClientRest.create(product);
+	}
+
+	@Override
+	public Product update(Product product, Integer id) {
+		return productClientRest.update(product, id);
+	}
+
+	@Override
+	public void delete(Integer id) {
+		productClientRest.deleteById(id);
 	}
 
 }

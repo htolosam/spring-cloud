@@ -47,4 +47,23 @@ public class ProductServiceImpl implements IProductService {
 		return this.productDao.findById(id).get();
 	}
 
+	@Override
+	public Product save(Product product) {
+		return productDao.save(product);
+	}
+	
+	@Override
+	public Product update(Product product, Integer id) {
+		Product productDb = productDao.findById(id).orElse(null);
+		productDb.setName(product.getName());
+		productDb.setPrice(product.getPrice());
+		return productDao.save(productDb);
+	}
+
+	@Override
+	public void deleteById(Integer id) {
+		productDao.deleteById(id);
+	}
+
+
 }
