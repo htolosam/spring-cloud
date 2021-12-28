@@ -44,4 +44,9 @@ spring:
           - AddRequestHeader=token-request, 123456
           - AddResponseHeader=tokes-request, 12345678
           - AddRequestParameter=name, HoTolosa
-          
+      - id: users-manager
+        uri: lb://users-manager
+        predicates:
+          - Path=/api/users/**
+        filters:
+          - StripPrefix=2
