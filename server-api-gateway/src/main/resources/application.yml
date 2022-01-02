@@ -50,3 +50,9 @@ spring:
           - Path=/api/users/**
         filters:
           - StripPrefix=2
+      - id: oauth-manager
+        uri: lb://oauth-manager
+        predicates:
+          - Path=/api/security/**
+        filters:
+          - StripPrefix=2
