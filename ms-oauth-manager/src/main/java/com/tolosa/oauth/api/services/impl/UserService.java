@@ -1,4 +1,4 @@
-package com.tolosa.oauth.api.services;
+package com.tolosa.oauth.api.services.impl;
 
 import java.util.List;
 import java.util.Objects;
@@ -14,12 +14,13 @@ import org.springframework.stereotype.Service;
 
 import com.tolosa.commons.app.models.entity.User;
 import com.tolosa.oauth.api.clients.IUserFeingClient;
+import com.tolosa.oauth.api.services.IUserService;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class UserService implements UserDetailsService {
+public class UserService implements UserDetailsService, IUserService {
 	
 	private IUserFeingClient client;
 	
@@ -41,4 +42,11 @@ public class UserService implements UserDetailsService {
 		return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(), user.getEnabled(), true, true, true, authorities);
 	}
 
+	@Override
+	public User findByUserName(String userName) {
+		return client.findByUserName(userName);
+	}
+
+	
+	
 }
