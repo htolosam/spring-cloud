@@ -37,9 +37,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	
 	private AdditionalInformationToken informationToken;
 
-	public AuthorizationServerConfig(BCryptPasswordEncoder passwordEncoder,
-			AuthenticationManager authenticationManager, 
-			AdditionalInformationToken informationToken) {
+	public @Autowired AuthorizationServerConfig(BCryptPasswordEncoder passwordEncoder,
+			@Autowired AuthenticationManager authenticationManager, 
+			@Autowired AdditionalInformationToken informationToken) {
 		this.passwordEncoder = passwordEncoder;
 		this.authenticationManager = authenticationManager;
 		this.informationToken = informationToken;
