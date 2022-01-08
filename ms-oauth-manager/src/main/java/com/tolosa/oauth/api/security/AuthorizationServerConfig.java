@@ -1,7 +1,12 @@
 package com.tolosa.oauth.api.security;
 
+import java.util.Arrays;
+import java.util.Base64;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -9,6 +14,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
@@ -22,14 +28,21 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
+	@Autowired
+	private Environment env;
+	
 	private BCryptPasswordEncoder passwordEncoder;
 
 	private AuthenticationManager authenticationManager;
+	
+	private AdditionalInformationToken informationToken;
 
 	public AuthorizationServerConfig(BCryptPasswordEncoder passwordEncoder,
-			AuthenticationManager authenticationManager) {
+			AuthenticationManager authenticationManager, 
+			AdditionalInformationToken informationToken) {
 		this.passwordEncoder = passwordEncoder;
 		this.authenticationManager = authenticationManager;
+		this.informationToken = informationToken;
 	}
 
 	/**
@@ -60,8 +73,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	 */
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		clients.inMemory().withClient("userFrontend")
-		.secret(this.passwordEncoder.encode("12345"))
+		clients.inMemory().withClient(env.getProperty("config.security.oauth.client.id"))
+		.secret(this.passwordEncoder.encode(env.getProperty("config.security.oauth.client.secret")))
 		.scopes("read", "write")
 		.authorizedGrantTypes("password", "refresh_token")
 		.accessTokenValiditySeconds(3600)
@@ -73,12 +86,17 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	 * Configuramos el authenticationManager Token sstorage (debe ser del tipo jw7
 	 * Converter Componente que se encarga de guardar los datos del user en el
 	 * token. todo codificado en base 64 creamos el metodo tokenStore
+	 * 
+	 * Para unir los datos adicionales en el token usamos TokenEnhancerChain
 	 */
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+		TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+		tokenEnhancerChain.setTokenEnhancers(Arrays.asList(informationToken, accessTokenConverter()));
 		// registrar authenticationManager
 		endpoints.authenticationManager(authenticationManager).tokenStore(tokenStore())
-				.accessTokenConverter(accessTokenConverter());
+				.accessTokenConverter(accessTokenConverter())
+				.tokenEnhancer(tokenEnhancerChain);
 	}
 
 	/**
@@ -102,7 +120,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		// se debe agregar un codigo secreto para la firma del token
 		// ese mismo token se debe validar en el servidor de recursos para verificar
 		// que sea el correcto para dar acceso a los clientes a los recursos protegidos
-		tokenConverter.setSigningKey("codigo_secreto");
+		tokenConverter.setSigningKey(Base64.getEncoder().encodeToString(env.getProperty("config.security.oauth.jwt.key").getBytes()));
 		return tokenConverter;
 	}
 
