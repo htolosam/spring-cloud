@@ -31,6 +31,7 @@ public class User implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private Integer id;
 
 	@Column(name = "user_name")
@@ -48,10 +49,14 @@ public class User implements Serializable {
 
 	@Column(unique = true, length = 200)
 	private String email;
+	
+	@Column(name = "intentos")
+	private Integer attempts;
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "usuarios_has_roles", joinColumns = @JoinColumn(name = "usuarios_id"), inverseJoinColumns = @JoinColumn(name = "roles_id"))
 	private List<Role> roles;
+	
 
 	/**
 	 * 

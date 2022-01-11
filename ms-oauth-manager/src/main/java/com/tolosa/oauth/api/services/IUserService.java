@@ -5,5 +5,7 @@ import com.tolosa.commons.app.models.entity.User;
 public interface IUserService {
 	
 	public User findByUserName(String userName);
+	
+	public User update(User user, Integer id);
 
 }

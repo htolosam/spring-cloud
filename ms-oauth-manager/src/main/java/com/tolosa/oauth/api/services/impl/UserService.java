@@ -23,12 +23,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class UserService implements UserDetailsService, IUserService {
-	
+
 	private IUserFeingClient client;
-	
-	
+
 	private Tracer tracer;
-	
+
 	public UserService(@Autowired IUserFeingClient client, Tracer tracer) {
 		this.client = client;
 	}
@@ -36,16 +35,15 @@ public class UserService implements UserDetailsService, IUserService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		try {
-		User user = client.findByUserName(username);
-		if(Objects.isNull(user)) {
-			throw new UsernameNotFoundException(String.format("El usuario %s no existe", username));
-		}
-		List<GrantedAuthority> authorities = user.getRoles()
-				.stream()
-				.map(role -> new SimpleGrantedAuthority(role.getName()))
-				.peek(authority -> log.info("Role: " + authority.getAuthority()))
-				.collect(Collectors.toList());
-		return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(), user.getEnabled(), true, true, true, authorities);
+			User user = client.findByUserName(username);
+			if (Objects.isNull(user)) {
+				throw new UsernameNotFoundException(String.format("El usuario %s no existe", username));
+			}
+			List<GrantedAuthority> authorities = user.getRoles().stream()
+					.map(role -> new SimpleGrantedAuthority(role.getName()))
+					.peek(authority -> log.info("Role: " + authority.getAuthority())).collect(Collectors.toList());
+			return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(),
+					user.getEnabled(), true, true, true, authorities);
 		} catch (FeignException fe) {
 			String error = "Error en el login, no existe el usuario, '" + username + "' en la app";
 			log.error(error);
@@ -59,6 +57,9 @@ public class UserService implements UserDetailsService, IUserService {
 		return client.findByUserName(userName);
 	}
 
-	
-	
+	@Override
+	public User update(User user, Integer id) {
+		return client.update(user, id);
+	}
+
 }
