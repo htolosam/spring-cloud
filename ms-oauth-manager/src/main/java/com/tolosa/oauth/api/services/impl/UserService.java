@@ -16,6 +16,8 @@ import com.tolosa.commons.app.models.entity.User;
 import com.tolosa.oauth.api.clients.IUserFeingClient;
 import com.tolosa.oauth.api.services.IUserService;
 
+import brave.Tracer;
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -24,12 +26,16 @@ public class UserService implements UserDetailsService, IUserService {
 	
 	private IUserFeingClient client;
 	
-	public UserService(@Autowired IUserFeingClient client) {
+	
+	private Tracer tracer;
+	
+	public UserService(@Autowired IUserFeingClient client, Tracer tracer) {
 		this.client = client;
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		try {
 		User user = client.findByUserName(username);
 		if(Objects.isNull(user)) {
 			throw new UsernameNotFoundException(String.format("El usuario %s no existe", username));
@@ -40,6 +46,12 @@ public class UserService implements UserDetailsService, IUserService {
 				.peek(authority -> log.info("Role: " + authority.getAuthority()))
 				.collect(Collectors.toList());
 		return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(), user.getEnabled(), true, true, true, authorities);
+		} catch (FeignException fe) {
+			String error = "Error en el login, no existe el usuario, '" + username + "' en la app";
+			log.error(error);
+			tracer.currentSpan().tag("error.mensaje", error + " : " + fe.getMessage());
+			throw new UsernameNotFoundException(error);
+		}
 	}
 
 	@Override
